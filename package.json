@@ -10,7 +10,8 @@
     "prepare": "svelte-kit sync || echo ''"
   },
   "dependencies": {
-    "@deno/vite-plugin": "^1.0.4"
+    "@deno/vite-plugin": "^1.0.4",
+    "@sveltejs/adapter-static": "^3.0.8"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^4.0.0",

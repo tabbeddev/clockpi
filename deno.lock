@@ -5,6 +5,7 @@
     "jsr:@std/datetime@~0.225.3": "0.225.3",
     "npm:@deno/vite-plugin@^1.0.4": "1.0.4_vite@6.1.1",
     "npm:@sveltejs/adapter-auto@4": "4.0.0_@sveltejs+kit@2.17.2__@sveltejs+vite-plugin-svelte@5.0.3___svelte@5.20.2____acorn@8.14.0___vite@6.1.1__svelte@5.20.2___acorn@8.14.0__vite@6.1.1_@sveltejs+vite-plugin-svelte@5.0.3__svelte@5.20.2___acorn@8.14.0__vite@6.1.1_svelte@5.20.2__acorn@8.14.0_vite@6.1.1",
+    "npm:@sveltejs/adapter-static@^3.0.8": "3.0.8_@sveltejs+kit@2.17.2__@sveltejs+vite-plugin-svelte@5.0.3___svelte@5.20.2____acorn@8.14.0___vite@6.1.1__svelte@5.20.2___acorn@8.14.0__vite@6.1.1_@sveltejs+vite-plugin-svelte@5.0.3__svelte@5.20.2___acorn@8.14.0__vite@6.1.1_svelte@5.20.2__acorn@8.14.0_vite@6.1.1",
     "npm:@sveltejs/kit@^2.16.0": "2.17.2_@sveltejs+vite-plugin-svelte@5.0.3__svelte@5.20.2___acorn@8.14.0__vite@6.1.1_svelte@5.20.2__acorn@8.14.0_vite@6.1.1",
     "npm:@sveltejs/vite-plugin-svelte@5": "5.0.3_svelte@5.20.2__acorn@8.14.0_vite@6.1.1",
     "npm:svelte@5": "5.20.2_acorn@8.14.0",
@@ -193,6 +194,12 @@
       "dependencies": [
         "@sveltejs/kit",
         "import-meta-resolve"
+      ]
+    },
+    "@sveltejs/adapter-static@3.0.8_@sveltejs+kit@2.17.2__@sveltejs+vite-plugin-svelte@5.0.3___svelte@5.20.2____acorn@8.14.0___vite@6.1.1__svelte@5.20.2___acorn@8.14.0__vite@6.1.1_@sveltejs+vite-plugin-svelte@5.0.3__svelte@5.20.2___acorn@8.14.0__vite@6.1.1_svelte@5.20.2__acorn@8.14.0_vite@6.1.1": {
+      "integrity": "sha512-YaDrquRpZwfcXbnlDsSrBQNCChVOT9MGuSg+dMAyfsAa1SmiAhrA5jUYUiIMC59G92kIbY/AaQOWcBdq+lh+zg==",
+      "dependencies": [
+        "@sveltejs/kit"
       ]
     },
     "@sveltejs/kit@2.17.2_@sveltejs+vite-plugin-svelte@5.0.3__svelte@5.20.2___acorn@8.14.0__vite@6.1.1_svelte@5.20.2__acorn@8.14.0_vite@6.1.1": {
@@ -456,6 +463,7 @@
       "dependencies": [
         "npm:@deno/vite-plugin@^1.0.4",
         "npm:@sveltejs/adapter-auto@4",
+        "npm:@sveltejs/adapter-static@^3.0.8",
         "npm:@sveltejs/kit@^2.16.0",
         "npm:@sveltejs/vite-plugin-svelte@5",
         "npm:svelte@5",
