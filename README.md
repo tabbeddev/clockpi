@@ -11,5 +11,5 @@ Also works with something else with a touchscreen
 The output is in `build`.
 
 > [!NOTE]
-> The server output is not needed, as this is a CSR Application.
+> The server output is not needed, as this is a CSR Application.  
 > But a server is needed to comply with CORS.

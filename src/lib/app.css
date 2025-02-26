@@ -13,7 +13,7 @@
 }
 
 bg {
-  min-height: 100vh;
+  height: 100vh;
   display: block;
 }
 
@@ -264,6 +264,21 @@ body {
 
 }
 
+.popout.trimmed {
+  width: calc(80vw - 8px);
+  padding: 0 10vw;
+  text-align: left;
+}
+
+.popout.short {
+  height: calc(50vh - 8px);
+}
+
+.popout .clock {
+  text-align: center;
+  line-height: 0;
+}
+
 .clock {
   -webkit-text-stroke-width: 2px;
   white-space: nowrap;
@@ -314,6 +329,10 @@ button, .boxed {
     font-size: 20pt;
     gap: 2px;
   }
+}
+
+.bottombar.justifycenter {
+  justify-content: center;
 }
 
 .spacebox {

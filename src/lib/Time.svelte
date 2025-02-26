@@ -1,12 +1,12 @@
 <script>
-    let props = $props();
+    let { splitted_time } = $props();
     let changestate = $state(0);
 
     function changeTiming(digit) {
-        props.splitted_time[changestate] =
-            props.splitted_time[changestate].substring(1);
+        splitted_time[changestate] =
+            splitted_time[changestate].substring(1);
 
-        props.splitted_time[changestate] += digit.toString();
+        splitted_time[changestate] += digit.toString();
     }
 </script>
 
@@ -17,7 +17,7 @@
     class:selected={changestate == 0}
     onclick={() => {
         changestate = 0;
-    }}>{props.splitted_time[0]}</span
+    }}>{splitted_time[0]}</span
 >
 :
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -27,7 +27,7 @@
     class:selected={changestate == 1}
     onclick={() => {
         changestate = 1;
-    }}>{props.splitted_time[1]}</span
+    }}>{splitted_time[1]}</span
 >
 <br />
 <br />
