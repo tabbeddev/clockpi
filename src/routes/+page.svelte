@@ -25,10 +25,10 @@
     }
 
     if (d.getSeconds() == 0) {
-      if (format(d, "HH:mm") == nightmode_on) {
+      if (format(d, "HH:mm") == nightmode_on && auto_nightmode) {
         on = false;
       }
-      if (format(d, "HH:mm") == nightmode_off) {
+      if (format(d, "HH:mm") == nightmode_off && auto_nightmode) {
         on = true;
       }
 
@@ -236,7 +236,9 @@
   let theme = $state(getLocalStorage("theme", "lightblue"));
   let second_settings = $state(getLocalStorage("seconds", 1));
   let hour_gong = $state(getLocalStorage("hour", false) == "true");
-  let auto_nightmode = $state(getLocalStorage("autonightmode", false) == "true");
+  let auto_nightmode = $state(
+    getLocalStorage("autonightmode", false) == "true",
+  );
   let alarms = $state(JSON.parse(getLocalStorage("alarms", "[]")));
   let notifications = $state(
     JSON.parse(getLocalStorage("notifications", "[]")),
@@ -547,7 +549,8 @@
           right to navigate the bottom bar.
         </p>
         <p>
-          You can also swipe to the left on the first page to quickly edit alarms.
+          You can also swipe to the left on the first page to quickly edit
+          alarms.
         </p>
       {/if}
     </div>
@@ -626,7 +629,9 @@
                 >Black</button
               >
             {:else if page_number == 7}
-              <button type="button" onclick={() => reset()}>Reset all settings and reload</button>
+              <button type="button" onclick={() => reset()}
+                >Reset all settings and reload</button
+              >
             {/if}
           </div>
         {/key}
