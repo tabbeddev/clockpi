@@ -6,7 +6,9 @@ import { contentType } from "jsr:@std/media-types";
 
 let SIMMODE = Deno.args.includes("simmode");
 if (SIMMODE) {
-	console.warn("Starting in Simulated Mode! Not all features are truly functional!");
+  console.warn(
+    "Starting in Simulated Mode! Not all features are truly functional!",
+  );
 }
 
 function writeConfig(): void {
@@ -65,17 +67,17 @@ Deno.mkdirSync(mediaPath, { recursive: true });
 
 let backlight_path: string;
 try {
-	backlight_path = `/sys/class/backlight/${
-		Deno.readDirSync("/sys/class/backlight").toArray()[0].name
-	}/`;
+  backlight_path = `/sys/class/backlight/${
+    Deno.readDirSync("/sys/class/backlight").toArray()[0].name
+  }/`;
 } catch {
-	backlight_path = "";
-	console.warn("No Backlight Device found! Using Simmode!");
-	
-	SIMMODE = true;
+  backlight_path = "";
+  console.warn("No Backlight Device found! Using Simmode!");
+
+  SIMMODE = true;
 }
 
-type ConfigEntry = string | boolean | string[]
+type ConfigEntry = string | boolean | string[];
 type Config = Record<string, ConfigEntry>;
 
 let config: Config;
@@ -197,22 +199,25 @@ Deno.serve({ port: 8109 }, async (req, info) => {
 
     switch (json.type) {
       case RequestType.BacklightPower:
-				if (SIMMODE) {
-        	console.log(`SIMULATING BL_POWER: ${json.enabled ? "0" : "1"}`);
-				} else {
-					Deno.writeTextFileSync(
-						backlight_path + "bl_power",
-						json.enabled ? "0" : "1",
-					);
-				}
+        if (SIMMODE) {
+          console.log(`SIMULATING BL_POWER: ${json.enabled ? "0" : "1"}`);
+        } else {
+          Deno.writeTextFileSync(
+            backlight_path + "bl_power",
+            json.enabled ? "0" : "1",
+          );
+        }
         break;
 
       case RequestType.Brightness:
-				if (SIMMODE) {
-        	console.log(`SIMULATING BRIGHTNESS: ${json.data}`);
-				} else {
-        Deno.writeTextFileSync(backlight_path + "backlight", json.data.toString());
-				}
+        if (SIMMODE) {
+          console.log(`SIMULATING BRIGHTNESS: ${json.data}`);
+        } else {
+          Deno.writeTextFileSync(
+            backlight_path + "brightness",
+            json.data.toString(),
+          );
+        }
         break;
 
       case RequestType.GetConfigs:
