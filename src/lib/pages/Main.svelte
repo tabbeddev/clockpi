@@ -277,7 +277,11 @@
 		</div>
 	{/if}
 	{#if !nightmode}
-		<div class="bottombar overflow-scroll" class:expanded={settings_mode}>
+		<div
+			class="bottombar"
+			class:overflow-scroll={settings_mode}
+			class:expanded={settings_mode}
+		>
 			{#if settings_mode}
 				<SettingsPage
 					{config}
