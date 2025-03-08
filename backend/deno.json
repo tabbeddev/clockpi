@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "dev": "deno run --watch -A main.ts simmode",
+    "compile_x86-64": "deno compile --target=x86_64-unknown-linux-gnu -Ao clockpi_backend_x86-64 main.ts",
+    "compile_aarch64": "deno compile --target=aarch64-unknown-linux-gnu -Ao clockpi_backend_aarch64 main.ts"
+  },
+  "imports": {
+    "@std/media-types": "jsr:@std/media-types@^1.1.0",
+    "@std/path": "jsr:@std/path@^1.0.8"
+  }
+}
