@@ -20,16 +20,29 @@
 		});
 	}
 
+	const websocketURL = new URL(location);
+	websocketURL.protocol = websocketURL == "https" ? "wss" : "ws";
+	websocketURL.pathname = "/";
+	websocketURL.port = 8109;
+
 	let error = $state();
 	const config_request = JSON.stringify({
 		type: "get-configs",
 		config_keys: [
 			"theme",
+			"font",
 			"showSeconds",
+			"pulseAlarm",
 			"alarmRingtone",
 			"notiRingtone",
 			"alarms",
 			"notifications",
+			"normalBrightness",
+			"nightBrightness",
+			"darkNightmode",
+			"nightmode_on",
+			"nightmode_off",
+			"hourGong"
 		],
 	});
 
@@ -44,7 +57,7 @@
 {#if error}
 	<bg class="black cursor">
 		<div class="centered max-w-2/3">
-			<Spinner text="An error occured!" invert={false} />
+			<Spinner text="An error occured!" />
 			<p>Please reload the page to avoid further problems.</p>
 			<button type="button" onclick={() => location.reload()}
 				>Reload page</button
@@ -71,7 +84,7 @@
 {/if}
 
 {#if !error}
-	{#await connectWebSocket("ws://localhost:8109")}
+	{#await connectWebSocket(websocketURL.href)}
 		<bg class="black cursor">
 			<div class="centered">
 				<Clock showSeconds={true} />

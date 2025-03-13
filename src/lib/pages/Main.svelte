@@ -12,6 +12,9 @@
 	import { fade } from "svelte/transition";
 	import { findNextAlarm, isToday } from "$lib/modules/date_util";
 	import Close from "$lib/components/icons/Close.svelte";
+	import Scrollable from "$lib/components/Scrollable.svelte";
+	import ClockIcon from "$lib/components/icons/Clock.svelte";
+	import loopAlarms from "$lib/modules/loop_alarms";
 
 	let cursormode = $state(false);
 	const { websocket, init_message } = $props();
@@ -28,6 +31,7 @@
 	const notification = new Audio();
 	alarm.src = resolveMediaPath(config.alarmRingtone, defaultAlarm);
 	notification.src = resolveMediaPath(config.notiRingtone, defaultNotification);
+	const gongAudio = new Audio(gong);
 
 	let next_alarm = $state(findNextAlarm(config.alarms));
 	let alarm_ringing = $state(false);
@@ -49,8 +53,10 @@
 			clearTimeout(activate_timeout);
 		}
 
-		activate_timeout = setInterval(() => {
-			active_nightmode = false;
+		activate_timeout = setTimeout(() => {
+			if (!alarm_ringing) {
+				active_nightmode = false;
+			}
 		}, 5000);
 	}
 
@@ -82,44 +88,42 @@
 
 	function onHour(d) {
 		date = toDate(d);
+
+		if (config.hourGong) {
+      const max_plays = d.getHours() > 12 ? d.getHours() - 12 : d.getHours();
+      for (let i = 0; i < max_plays; i++) {
+        setTimeout(() => {
+          gongAudio.play();
+        }, i * 1500);
+      }
+		}
 	}
 
 	function onMinute(d) {
 		// Alarms
-		for (let i = 0; i < config.alarms.length; i++) {
-			const alm = config.alarms[i];
-			if (
-				alm.hour == d.getHours() &&
-				alm.minute == d.getMinutes() &&
-				!alm.disabled &&
-				(alm.repeat.length === 0 || alm.repeat.includes(d.getDay())) &&
-				alarm.paused
-			) {
+		loopAlarms(
+			d,
+			config.alarms,
+			(i) => {
 				if (nightmode) {
-					activate_timeout = true;
-				}
-
-				if (alm.repeat.length === 0) {
-					config.alarms[i].disabled = true;
+					active_nightmode = true;
 				}
 
 				alarm_ringing = true;
 				alarm.currentTime = 0;
 				alarm.play();
-			}
-		}
+			},
+			alarm.paused,
+		);
 
 		// Notifications
-		for (let i = 0; i < config.notifications.length; i++) {
-			const not = config.notifications[i];
-			if (
-				not.hour == d.getHours() &&
-				not.minute == d.getMinutes() &&
-				!not.disabled &&
-				(not.repeat.length === 0 || not.repeat.includes(d.getDay())) &&
-				alarm.paused
-			) {
+		loopAlarms(
+			d,
+			config.notifications,
+			(i) => {
+				const not = config.notifications[i];
 				const not_date = new Date();
+
 				not_date.setHours(not.hour, not.minute, 0);
 				noti = not_date.toLocaleTimeString(undefined, {
 					hour: "numeric",
@@ -129,12 +133,30 @@
 				if (!nightmode) {
 					notification.play();
 				}
+			},
+			notification.paused,
+		);
 
-				if (not.repeat.length === 0) {
-					config.notifications[i].disabled = true;
-				}
-			}
-		}
+		// Event on
+		loopAlarms(
+			d,
+			config.nightmode_on,
+			() => {
+				nightmode = true;
+				wake();
+			},
+			true,
+		);
+
+		// Event off
+		loopAlarms(
+			d,
+			config.nightmode_off,
+			() => {
+				nightmode = false;
+			},
+			true,
+		);
 	}
 
 	// Websocket
@@ -202,13 +224,26 @@
 	});
 
 	$effect(() => {
-		// TODO: Make this configurable
 		websocket.send(
-			JSON.stringify({ type: "brightness", data: nightmode ? "15" : "25" }),
+			JSON.stringify({
+				type: "brightness",
+				data: nightmode ? config.nightBrightness : config.normalBrightness,
+			}),
 		);
 	});
 
 	$effect(() => {
+		if (
+			config.alarmRingtone !== "Default" &&
+			!config.media.includes(config.alarmRingtone)
+		)
+			config.alarmRingtone = "Default";
+		if (
+			config.notiRingtone !== "Default" &&
+			!config.media.includes(config.notiRingtone)
+		)
+			config.notiRingtone = "Default";
+
 		alarm.src = resolveMediaPath(config.alarmRingtone, defaultAlarm);
 		notification.src = resolveMediaPath(
 			config.notiRingtone,
@@ -225,18 +260,24 @@
 	onmousemove={wake}
 />
 
-<!-- TODO: Make black theme in nightmode toggable -->
 <bg
-	class={nightmode ? "black" : config.theme}
+	class={[
+		nightmode && config.darkNightmode ? "black" : config.theme,
+		"font-" + config.font,
+	]}
 	class:cursor={cursormode}
 	class:blackmode={nightmode && !active_nightmode}
 	class:dimmed={active_nightmode}
+	class:pulsing={alarm_ringing && config.pulseAlarm && nightmode}
 >
 	{#if !nightmode || active_nightmode}
 		<div class="centered" class:top={settings_mode}>
 			<Clock showSeconds={config.showSeconds} {onHour} {onMinute} />
 			{#if alarm_ringing}
-				<button type="button" onclick={stopRinging}>Dismiss alarm</button>
+				<button type="button" onclick={stopRinging} class="min-h-fit ruby">
+					<ClockIcon />
+					Dismiss alarm
+				</button>
 			{:else if nightmode}
 				<button
 					type="button"
@@ -277,18 +318,16 @@
 		</div>
 	{/if}
 	{#if !nightmode}
-		<div
-			class="bottombar"
-			class:overflow-scroll={settings_mode}
-			class:expanded={settings_mode}
-		>
+		<div class="bottombar" class:expanded={settings_mode}>
 			{#if settings_mode}
-				<SettingsPage
-					{config}
-					closeSettings={() => {
-						settings_mode = false;
-					}}
-				/>
+				<Scrollable>
+					<SettingsPage
+						{config}
+						closeSettings={() => {
+							settings_mode = false;
+						}}
+					/>
+				</Scrollable>
 			{:else if noti}
 				<div class="bottomitem">Notification:</div>
 				<div class="bottomitem">It's {noti}</div>

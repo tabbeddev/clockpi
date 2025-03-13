@@ -5,38 +5,39 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(/font.ttf) format("truetype");
-  unicode-range:
-    U+0000-00FF,
-    U+0131,
-    U+0152-0153,
-    U+02BB-02BC,
-    U+02C6,
-    U+02DA,
-    U+02DC,
-    U+0304,
-    U+0308,
-    U+0329,
-    U+2000-206F,
-    U+20AC,
-    U+2122,
-    U+2191,
-    U+2193,
-    U+2212,
-    U+2215,
-    U+FEFF,
-    U+FFFD;
+  src: url(/offside.ttf) format("truetype");
 }
 
-@keyframes blink {
+@font-face {
+  font-family: "Iceberg";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/iceberg.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Gugi";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/gugi.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Orbitron";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/orbitron.ttf) format("truetype");
+}
+
+@keyframes bg-pulse {
   from {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
+  	filter: brightness(1);
   }
   to {
-    transform: scale(1);
+    filter: brightness(0.5);
   }
 }
 
@@ -70,7 +71,7 @@ bg.blue {
     background-color: rgba(80, 255, 255, 0.35);
   }
 
-  button {
+  button, .button {
     background-color: rgba(234, 252, 255, 0.75);
     color: black;
   }
@@ -107,7 +108,7 @@ bg.purple {
     background-color: rgba(231, 134, 255, 0.35);
   }
 
-  button {
+  button, .button {
     background-color: rgba(244, 187, 252, 0.75);
     color: black;
   }
@@ -144,7 +145,7 @@ bg.lightblue {
     background-color: rgba(89, 138, 155, 0.25);
   }
 
-  button {
+  button, .button {
     background-color: rgba(238, 251, 255, 0.75);
     color: black;
   }
@@ -181,7 +182,7 @@ bg.gray {
     background-color: rgba(150, 150, 150, 0.25);
   }
 
-  button {
+  button, .button {
     background-color: rgba(250, 250, 250, 0.75);
     color: black;
   }
@@ -204,7 +205,11 @@ bg.black {
     -webkit-text-stroke-color: rgb(225, 225, 225);
   }
 
-  button {
+  .bottombar {
+    background-color: rgba(150, 150, 150, 0.25);
+  }
+
+  button, .button {
     background-color: rgb(95, 95, 95);
     color: white;
   }
@@ -227,9 +232,13 @@ bg.white {
     -webkit-text-stroke-color: black;
   }
 
-  button {
+  button, .button {
     background-color: rgb(240, 240, 240);
     color: black;
+  }
+
+  .bottombar {
+    background-color: rgba(150, 150, 150, 0.25);
   }
 
   button:disabled {
@@ -241,9 +250,42 @@ bg.white {
   }
 }
 
+.font-offside {
+  * {
+    font-family: "Offside";
+  }
+}
+
+.font-iceberg {
+  * {
+    font-family: "Iceberg";
+  }
+}
+
+.font-orbitron {
+  * {
+    font-family: "Orbitron";
+  }
+}
+
+.font-gugi {
+  * {
+    font-family: "Gugi";
+  }
+}
+
+.font-system {
+	* {
+		font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	}
+}
+
+bg.pulsing {
+  animation: 1.5s steps(50) infinite alternate bg-pulse;
+}
+
 body {
   margin: 0;
-  font-family: Offside;
   cursor: none;
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
@@ -282,18 +324,13 @@ h2.clock {
   -webkit-text-stroke-width: 1px;
 }
 
-.pulsing {
-  animation: blink 500ms;
-}
-
-button {
+button, .button {
   border: none;
   height: 32px;
   min-width: 80px;
   cursor: none;
   border-radius: 4px;
   padding: 0 15px;
-  font-family: Offside;
   font-size: 14pt;
   transition: background-color 200ms;
 }
@@ -325,7 +362,7 @@ button {
   transition: height 750ms;
   display: block;
 
-  button {
+  button, .button {
     margin: 2px 3px;
   }
 }
@@ -337,7 +374,7 @@ button {
 
 bg.cursor {
   cursor: initial;
-  button {
+  button, .button {
     cursor: initial;
   }
 }
@@ -375,4 +412,27 @@ h1, h2, h3, h4, h5, h6 {
 
 hr {
   margin: revert;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 7px;
+  margin: 5px 0;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 7px;
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+input[type="file"] {
+  display: none;
 }

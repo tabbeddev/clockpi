@@ -77,7 +77,7 @@ try {
   SIMMODE = true;
 }
 
-type ConfigEntry = string | boolean | string[];
+type ConfigEntry = string | boolean | string[] | number;
 type Config = Record<string, ConfigEntry>;
 
 let config: Config;
@@ -89,7 +89,9 @@ if (existsSync(configPath)) {
 }
 const config_set = new Set(Object.keys(config));
 setDefaultValue(config_set, "theme", "blue");
+setDefaultValue(config_set, "font", "offside");
 setDefaultValue(config_set, "showSeconds", true);
+setDefaultValue(config_set, "pulseAlarm", true);
 setDefaultValue(config_set, "alarmRingtone", "Default");
 setDefaultValue(config_set, "notiRingtone", "Default");
 // Syntax for alarms and notifications
@@ -97,6 +99,12 @@ setDefaultValue(config_set, "notiRingtone", "Default");
 // [{hour: 7, minute: 0, disabled: false, repeat: [0, 3, 5, 6]}]
 setDefaultValue(config_set, "alarms", []);
 setDefaultValue(config_set, "notifications", []);
+setDefaultValue(config_set, "nightmode_on", []);
+setDefaultValue(config_set, "nightmode_off", []);
+setDefaultValue(config_set, "normalBrightness", 50);
+setDefaultValue(config_set, "nightBrightness", 35);
+setDefaultValue(config_set, "darkNightmode", true);
+setDefaultValue(config_set, "hourGong", true);
 
 writeConfig();
 
@@ -112,9 +120,16 @@ Deno.serve({ port: 8109 }, async (req, info) => {
         try {
           let file_path: string;
           if (url.pathname.startsWith("/media")) {
-            file_path = mediaPath + url.pathname.substring(7);
+            file_path = mediaPath + decodeURI(url.pathname.substring(7));
+
+            if (url.pathname == "/media" || url.pathname == "/media/") {
+              const files = Deno.readDirSync(mediaPath).toArray().map((e) =>
+                e.name
+              );
+              return new Response(stfy(files));
+            }
           } else {
-            file_path = "/var/clockpi" + url.pathname;
+            file_path = "/var/clockpi" + decodeURI(url.pathname);
             if (url.pathname == "/") {
               file_path += "/index.html";
             }
@@ -133,7 +148,7 @@ Deno.serve({ port: 8109 }, async (req, info) => {
 
       case "PUT":
       case "POST":
-        const path = url.pathname.substring(1);
+        const path = decodeURI(url.pathname.substring(1));
         if (!path) {
           return new Response("400 Missing Path", { status: 400 });
         }
@@ -154,13 +169,13 @@ Deno.serve({ port: 8109 }, async (req, info) => {
         }
 
       case "DELETE":
-        const path2 = url.pathname.substring(1);
+        const path2 = decodeURI(url.pathname.substring(1));
         if (!path2) {
           return new Response("400 Missing Path", { status: 400 });
         }
         const file_path2 = mediaPath + path2;
         if (!existsSync(file_path2)) {
-          return new Response("409 Conflict", { status: 409 });
+          return new Response("404 Not found", { status: 404 });
         }
 
         try {
