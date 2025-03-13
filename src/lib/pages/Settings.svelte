@@ -93,8 +93,8 @@
 		"",
 		"Create Alarm",
 		"Create Notification",
-		"Create Nightmode on event",
-		"Create Nightmode off event",
+		"Create Nightmode (on) event",
+		"Create Nightmode (off) event",
 	];
 
 	const weekdays = listWeekNames();

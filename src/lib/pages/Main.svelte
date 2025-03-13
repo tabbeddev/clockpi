@@ -89,7 +89,7 @@
 	function onHour(d) {
 		date = toDate(d);
 
-		if (config.hourGong) {
+		if (config.hourGong && !nightmode) {
       const max_plays = d.getHours() > 12 ? d.getHours() - 12 : d.getHours();
       for (let i = 0; i < max_plays; i++) {
         setTimeout(() => {
