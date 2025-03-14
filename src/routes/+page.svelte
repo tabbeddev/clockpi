@@ -81,9 +81,7 @@
 			>
 		</div>
 	</bg>
-{/if}
-
-{#if !error}
+{:else}
 	{#await connectWebSocket(websocketURL.href)}
 		<bg class="black cursor">
 			<div class="centered">

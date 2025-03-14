@@ -303,9 +303,9 @@
 				type="button"
 				class="select"
 				onclick={() => {
-					config[pageNumber == 2 ? "alarmRingtone" : "notiRingtone"] = media;
+					config[pageNumber == 3 ? "alarmRingtone" : "notiRingtone"] = media;
 				}}
-				disabled={(pageNumber == 2
+				disabled={(pageNumber == 3
 					? config.alarmRingtone
 					: config.notiRingtone) == media}>Select</button
 			>
