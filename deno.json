@@ -1,6 +1,6 @@
 {
   "imports": {
-    "@std/datetime": "jsr:@std/datetime@^0.225.3",
+    "@std/datetime": "jsr:@std/datetime@^0.225.4",
     "@std/media-types": "jsr:@std/media-types@^1.1.0",
     "@std/path": "jsr:@std/path@^1.0.8"
   }
