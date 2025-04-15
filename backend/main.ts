@@ -1,13 +1,12 @@
 #!/usr/bin/deno -NRWE
 // deno-lint-ignore-file no-case-declarations
 import { existsSync } from "jsr:@std/fs/exists";
-import { extname } from "jsr:@std/path";
-import { contentType } from "jsr:@std/media-types";
+import { serveFile } from "jsr:@std/http/file-server";
 
 let SIMMODE = Deno.args.includes("simmode");
 if (SIMMODE) {
   console.warn(
-    "Starting in Simulated Mode! Not all features are truly functional!",
+    "Starting in Simulated Mode! Not all features are truly functional!"
   );
 }
 
@@ -16,7 +15,9 @@ function writeConfig(): void {
 }
 
 function syncMedia(): void {
-  const media = Deno.readDirSync(mediaPath).toArray().map((e) => e.name);
+  const media = Deno.readDirSync(mediaPath)
+    .toArray()
+    .map((e) => e.name);
   for (const client of connectedClients) {
     client.send(stfy({ type: "media", media }));
   }
@@ -25,7 +26,7 @@ function syncMedia(): void {
 function setDefaultValue(
   config_set: Set<string>,
   key: string,
-  value: ConfigEntry,
+  value: ConfigEntry
 ) {
   if (!config_set.has(key)) {
     config[key] = value;
@@ -112,7 +113,7 @@ Deno.serve({ port: 8109 }, async (req, info) => {
   if (req.headers.get("upgrade") != "websocket") {
     const url = new URL(req.url);
     console.log(
-      `[${info.remoteAddr.hostname}] HTTP : ${req.method} - ${url.pathname}`,
+      `[${info.remoteAddr.hostname}] HTTP : ${req.method} - ${url.pathname}`
     );
 
     switch (req.method) {
@@ -123,9 +124,9 @@ Deno.serve({ port: 8109 }, async (req, info) => {
             file_path = mediaPath + decodeURI(url.pathname.substring(7));
 
             if (url.pathname == "/media" || url.pathname == "/media/") {
-              const files = Deno.readDirSync(mediaPath).toArray().map((e) =>
-                e.name
-              );
+              const files = Deno.readDirSync(mediaPath)
+                .toArray()
+                .map((e) => e.name);
               return new Response(stfy(files));
             }
           } else {
@@ -135,13 +136,7 @@ Deno.serve({ port: 8109 }, async (req, info) => {
             }
           }
 
-          const content = await Deno.readFile(file_path);
-          const type = contentType(extname(file_path));
-          if (!type) {
-            return new Response("400 Invalid File Path", { status: 400 });
-          }
-
-          return new Response(content, { headers: { "Content-Type": type } });
+          return serveFile(req, file_path);
         } catch {
           return new Response("404 Not Found", { status: 404 });
         }
@@ -219,7 +214,7 @@ Deno.serve({ port: 8109 }, async (req, info) => {
         } else {
           Deno.writeTextFileSync(
             backlight_path + "bl_power",
-            json.enabled ? "0" : "1",
+            json.enabled ? "0" : "1"
           );
         }
         break;
@@ -230,14 +225,16 @@ Deno.serve({ port: 8109 }, async (req, info) => {
         } else {
           Deno.writeTextFileSync(
             backlight_path + "brightness",
-            json.data.toString(),
+            json.data.toString()
           );
         }
         break;
 
       case RequestType.GetConfigs:
         const values: Config = {
-          media: Deno.readDirSync(mediaPath).toArray().map((e) => e.name),
+          media: Deno.readDirSync(mediaPath)
+            .toArray()
+            .map((e) => e.name),
         };
         for (const key of json.config_keys) {
           values[key] = config[key];
